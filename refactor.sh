@@ -1,6 +1,6 @@
 #!/bin/sh
 
-YESNOCASE () {
+YES_NO_CASE () {
   while true; do
       read -p "Do you wish to continue? (y/n)" yn
       case $yn in
@@ -13,35 +13,45 @@ YESNOCASE () {
 
 INCREMENT_STEP_COUNTER=0;
 MAX_STEP_COUNT=2;
-INCREMENT_STEP() {INCREMENT_STEP_COUNTER=$(($INCREMENT_STEP_COUNTER + 1)); echo Step $INCREMENT_STEP_COUNTER/$MAX_STEP_COUNT;}
+INCREMENT_STEP() {
+  INCREMENT_STEP_COUNTER=$(($INCREMENT_STEP_COUNTER + 1));
+  echo Step $INCREMENT_STEP_COUNTER/$MAX_STEP_COUNT;
+}
 
 echo Preparing to refactor project...
 INCREMENT_STEP
 echo This will overwrite gradle.properties!
-YESNOCASE
+YES_NO_CASE
 echo
 
 echo o DisplayName:
 read projectName
-projectName=${projectName:-SampleProject}
+projectName=${projectName:-"SampleProject"}
 projectId=${projectName// /_}
 projectId=${projectId,,}
 
 echo o Author:
 read projectAuthor
-projectAuthor=${projectAuthor:-StoneTrench}
+projectAuthor=${projectAuthor:-"StoneTrench"}
 projectAuthor=${projectAuthor// /_}
 projectAuthor=${projectAuthor,,}
 
 echo o Description:
 read projectDescription
-projectDescription=${projectDescription:-...}
+projectDescription=${projectDescription:-"..."}
 
-echo "version = 2.8.1_04-1.0
+echo o Version:
+read projectVersion
+projectVersion=${projectVersion:-"2.8.1_04-1.0"}
+
+echo "version = $projectVersion
 id = $projectId
 name = $projectName
 desc = $projectDescription
 author = $projectAuthor
+
+includeServer = true
+includeClient = true
 " > gradle.properties
 
 echo
@@ -49,7 +59,7 @@ echo Preparing to create folders...
 INCREMENT_STEP
 echo This will delete preexisting folders corresponding to: main, client, server
 echo
-YESNOCASE
+YES_NO_CASE
 echo
 
 # Main Portion
@@ -103,8 +113,7 @@ public class ModServer extends MainMod implements ServerMod {
 # Refactor main resources
 rm -rf ./src/main/resources/assets/
 mkdir -p ./src/main/resources/assets/$projectId/lang/
-echo "
-" > ./src/main/resources/assets/$projectId/lang/en_US.lang
+echo "" > ./src/main/resources/assets/$projectId/lang/en_US.lang
 
 echo Done.
 read -p "Press any key to continue ..."
